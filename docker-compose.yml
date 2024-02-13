@@ -1,0 +1,54 @@
+version: '3.9'
+services:
+  elasticsearch:
+   container_name: elasticsearch_for_api
+   image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+   ports:
+    - 9200:9200
+   environment:
+    - xpack.monitoring.enabled=true
+    - xpack.watcher.enabled=false
+    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    - discovery.type=single-node
+
+  kibana:
+   container_name: kibana_for_api
+   image: docker.elastic.co/kibana/kibana:7.15.0
+   ports:
+    - 5601:5601
+   depends_on:
+    - elasticsearch
+   environment:
+    - ELASTICSEARCH_URL= http://elasticsearch:9200
+
+  database:
+    image: postgres:latest
+    volumes:
+      - /var/lib/postgresql/data/
+    container_name: database
+    environment:
+      - POSTGRES_DB=LeaveManagement
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+
+  webapicleanarchitecture:
+    image: webapicleanarchitecture:latest
+    ports:
+      - "8080:7071"
+    depends_on:
+      - database
+      - elasticsearch
+    container_name: webapicleanarchitecture
+    environment:
+      - CONNECTIONSTRINGS__DEFAULT=user ID=user;Password=password;Host=database;Database=LeaveManagement
+      - ELASTIC_URI= http://elasticsearch:9200
+   
+  ui:
+    image: uileave:latest
+    ports:
+      - "8090:5184"
+    depends_on:
+      - webapicleanarchitecture
+    container_name: ui
+    environment:
+      - SERVER_URL= http://webapicleanarchitecture:7071

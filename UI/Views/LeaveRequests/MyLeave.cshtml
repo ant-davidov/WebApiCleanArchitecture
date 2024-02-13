@@ -1,0 +1,86 @@
+﻿@model MVC.Models.EmployeeLeaveRequestViewVM
+
+@{
+    ViewData["Title"] = "MyLeave";
+}
+
+
+
+<h2>Employee Leave Request View</h2>
+
+<div class="container">
+    <!-- Display Leave Allocations -->
+    <div class="mt-4">
+        <h3>Leave Allocations</h3>
+        @if (Model.LeaveAllocations != null && Model.LeaveAllocations.Any())
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Number Of Days</th>
+                        <th>Date Created</th>
+                        <th>Period</th>
+                        <th>Leave Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var allocation in Model.LeaveAllocations)
+                    {
+                        <tr>
+                            <td>@allocation.Id</td>
+                            <td>@allocation.NumberOfDays</td>
+                            <td>@allocation.DateCreated</td>
+                            <td>@allocation.Period</td>
+                            <td>@allocation.LeaveType.Name</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No Leave Allocations found.</p>
+        }
+    </div>
+
+    <!-- Display Leave Requests -->
+    <div class="mt-4">
+        <h3>Leave Requests</h3>
+        @if (Model.LeaveRequests != null && Model.LeaveRequests.Any())
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Date Requested</th>
+                        <th>Date Actioned</th>
+                        <th>Approval State</th>
+                        <th>Cancelled</th>
+                        <th>Leave Type</th>
+                        <th>Employee</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var request in Model.LeaveRequests)
+                    {
+                        <tr>
+                            <td>@request.Id</td>
+                            <td>@request.DateRequested</td>
+                            <td>@request.DateActioned</td>
+                            <td>@request.Approved</td>
+                            <td>@request.Cancelled</td>
+                            <td>@request.LeaveType.Name</td>
+                            
+                            <td>@request.Employee.Lastname</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No Leave Requests found.</p>
+        }
+    </div>
+</div>
